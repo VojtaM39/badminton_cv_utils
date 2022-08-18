@@ -4,7 +4,7 @@ import math
 
 
 def mask_image(image):
-  lower = np.uint8([0, 200, 0])
+  lower = np.uint8([200, 200, 200])
   upper = np.uint8([255, 255, 255])
   return cv2.inRange(image, lower, upper)
 
@@ -13,7 +13,7 @@ def get_lines(image):
   theta = np.pi / 180  # angular resolution in radians of the Hough grid
   threshold = 13  # minimum number of votes (intersections in Hough grid cell)
   min_line_length = 20  # minimum number of pixels making up a line
-  max_line_gap = 40  # maximum gap in pixels between connectable line segments
+  max_line_gap = 10  # maximum gap in pixels between connectable line segments
   
   return cv2.HoughLinesP(image, rho, theta, threshold, np.array([]),
                       min_line_length, max_line_gap)
