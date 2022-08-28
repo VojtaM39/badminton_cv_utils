@@ -25,8 +25,7 @@ def get_person_boundaries(keypoints):
   y_len = max_y - min_y
 
   if x_len > y_len:
-    diff = x_len - y_len
-    min_y = min_y - (diff // 2)
+    diff = x_len - y_len min_y = min_y - (diff // 2)
     max_y = max_y + (diff // 2)
   else:
     diff = y_len - x_len
@@ -66,9 +65,9 @@ def parse_keypoints(keypoints, keypoints_count):
     result.append((keypoints[idx * 3], keypoints[idx * 3 + 1]))
   return result
   
-def get_bottom_person(people):
+def get_bottom_person(people, center_borders):
   # Get person with point 1 closest to the bottom
-  left_border, right_border = get_center_borders(True)
+  left_border, right_border = center_borders
   
   current_max = -1;
   current_max_index = None
@@ -86,13 +85,13 @@ def get_bottom_person(people):
     
   return None
 
-def get_top_person(people, bottom):
+def get_top_person(people, bottom, center_borders):
   if bottom is None:
     return None
 
   bottom_y = bottom[8][1]
   # Get second most bottom person within borders
-  left_border, right_border = get_center_borders()
+  left_border, right_border = center_borders
   
   current_max = -1;
   current_max_index = None
