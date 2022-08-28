@@ -1,9 +1,9 @@
 import xml.etree.ElementTree as ET
 
-def get_frame_from_milliseconds(milliseconds):
-  return int(milliseconds / 1000 * FRAME_RATE
+def get_frame_from_milliseconds(milliseconds, frame_rate):
+  return int(milliseconds / 1000 * frame_rate)
 
-def load_annotations(annotation_file):
+def load_annotations(annotation_file, frame_rate):
   tree = ET.parse(annotation_file)
   root = tree.getroot()
 
@@ -12,7 +12,7 @@ def load_annotations(annotation_file):
   for child in root:
     if child.tag == 'TIME_ORDER':
       for time_element in child:
-        time_orders[time_element.attrib['TIME_SLOT_ID']] = get_frame_from_milliseconds(int(time_element.attrib['TIME_VALUE']))
+        time_orders[time_element.attrib['TIME_SLOT_ID']] = get_frame_from_milliseconds(int(time_element.attrib['TIME_VALUE']), frame_rate)
   
   annotations = []
   for child in root:
