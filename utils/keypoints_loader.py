@@ -1,4 +1,5 @@
 import cv2
+import json
 
 def get_person_boundaries(keypoints):
   max_x = -1
