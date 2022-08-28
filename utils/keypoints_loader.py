@@ -25,7 +25,8 @@ def get_person_boundaries(keypoints):
   y_len = max_y - min_y
 
   if x_len > y_len:
-    diff = x_len - y_len min_y = min_y - (diff // 2)
+    diff = x_len - y_len
+    min_y = min_y - (diff // 2)
     max_y = max_y + (diff // 2)
   else:
     diff = y_len - x_len
@@ -33,7 +34,6 @@ def get_person_boundaries(keypoints):
     max_x = max_x + (diff // 2)
   
   return int(max_x), int(min_x), int(max_y), int(min_y)
-    
   
 def visualize_person(image, keypoints):
   def get_int_point(float_point):
