@@ -43,10 +43,10 @@ def visualize_person(image, keypoints):
   
   max_x, min_x, max_y, min_y = get_person_boundaries(keypoints)
   
-  cv2.line(image, (min_x, min_y), (max_x, min_y), PERSON_COLOR, PERSON_THICKNESS)
-  cv2.line(image, (min_x, min_y), (min_x, max_y), PERSON_COLOR, PERSON_THICKNESS)
-  cv2.line(image, (max_x, min_y), (max_x, max_y), PERSON_COLOR, PERSON_THICKNESS)
-  cv2.line(image, (min_x, max_y), (max_x, max_y), PERSON_COLOR, PERSON_THICKNESS)
+  cv2.line(image, (min_x, min_y), (max_x, min_y), (255, 0, 0), 2)
+  cv2.line(image, (min_x, min_y), (min_x, max_y), (255, 0, 0), 2)
+  cv2.line(image, (max_x, min_y), (max_x, max_y), (255, 0, 0), 2)
+  cv2.line(image, (min_x, max_y), (max_x, max_y), (255, 0, 0), 2)
 
 def visualize_frame(video_path, frame_num, people = None):
   vidcap = cv2.VideoCapture(video_path)
