@@ -140,7 +140,7 @@ def get_keypoints(openpose_keypoints_path, frame_num):
       
         people_keypoints = []
         for person in parsed['people']:
-          parsed_person_keypoints = parse_keypoints(person['pose_keypoints_2d'])
+          parsed_person_keypoints = parse_keypoints(person['pose_keypoints_2d'], 25)
           people_keypoints.append(parsed_person_keypoints)
           
         return people_keypoints
