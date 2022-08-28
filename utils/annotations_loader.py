@@ -28,4 +28,5 @@ def load_annotations(annotation_file, frame_rate):
           }
         )
 
+  return annotations
 
