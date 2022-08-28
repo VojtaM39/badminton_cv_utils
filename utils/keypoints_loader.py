@@ -145,6 +145,7 @@ def get_keypoints(openpose_keypoints_path, frame_num):
         return people_keypoints
         
     except Exception as e:
+      print(e)
       idx += 1
       print('Attempt {} to load {} failed'.format(idx, file_path))
   return None
