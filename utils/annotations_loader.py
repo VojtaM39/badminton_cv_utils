@@ -1,7 +1,7 @@
 import xml.etree.ElementTree as ET
 
 def load_annotations(annotation_file):
-  tree = ET.parse(DATA_ANNOTATION_FILE)
+  tree = ET.parse(annotation_file)
   root = tree.getroot()
 
   # Parse time slots
