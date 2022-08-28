@@ -1,5 +1,8 @@
 import xml.etree.ElementTree as ET
 
+def get_frame_from_milliseconds(milliseconds):
+  return int(milliseconds / 1000 * FRAME_RATE
+
 def load_annotations(annotation_file):
   tree = ET.parse(annotation_file)
   root = tree.getroot()
