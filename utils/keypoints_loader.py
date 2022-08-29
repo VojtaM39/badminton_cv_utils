@@ -1,7 +1,7 @@
 import cv2
 import json
 
-def get_person_boundaries(keypoints):
+def get_person_boundaries(keypoints, rectangle = True):
   max_x = -1
   max_y = -1
   min_x = 9999
@@ -23,6 +23,10 @@ def get_person_boundaries(keypoints):
   height = max_y - min_y
   max_y = int(max_y + (height * 0.1))
   min_y = int(min_y - (height * 0.125))
+
+  # Return non rectangle bbox
+  if not rectangle:
+    return int(max_x), int(min_x), max_y, min_y
 
   x_len = max_x - min_x
   y_len = max_y - min_y
