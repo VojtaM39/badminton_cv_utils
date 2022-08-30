@@ -68,24 +68,58 @@ def get_vertical_outer_lines(lines, max_size):
     
   return [min, max]
 
+def is_actual_court(height, width, left_bot, left_top, right_bot, right_top):
+  MIN_RATIO_TOP = 0.3
+  MIN_RATIO_BOTTOM = 0.5
+  MIN_RATIO_VERTICAL = 0.3
+  
+  top_width = abs(right_top[0] - left_top[0])
+  bottom_width = abs(right_bot[0] - left_bot[0])
+  left_height = abs(left_bot[1] - left_top[1])
+  right_height = abs(right_bot[1] - right_top[1])
+  
+  if top_width < width * MIN_RATIO_TOP:
+    return False
+    
+  if bottom_width < width * MIN_RATIO_BOTTOM:
+    return False
+    
+  min_height = height * MIN_RATIO_VERTICAL
+  
+  if left_height < min_height:
+    return False
+    
+  if right_height < min_height:
+    return False
+
+  return True
+
 def detect_corners(image):
     """
     Returns:
         points(tuple): corner points of court (bottom_left, bottom_right, top_left, top_right)
     """
-    width, height, _ = image.shape
-    masked_image = mask_image(image)
-    lines = get_lines(masked_image)
-    filtered_lines = filter_lines(lines, 0.1 * get_max_distance(lines))
+    try:
+        height, width, _ = image.shape
+        masked_image = mask_image(image)
+        lines = get_lines(masked_image)
+        filtered_lines = filter_lines(lines, 0.1 * get_max_distance(lines))
 
-    max_distance_horizontal = get_max_distance(lines, False)
-    max_distance_vertical = get_max_distance(lines, True)
-    outer_lines = get_vertical_outer_lines(lines, max_distance_vertical)
+        max_distance_horizontal = get_max_distance(lines, False)
+        max_distance_vertical = get_max_distance(lines, True)
+        outer_lines = get_vertical_outer_lines(lines, max_distance_vertical)
 
-    left_bot = outer_lines[0][0]
-    left_top = outer_lines[0][1]
-    right_bot = outer_lines[1][0]
-    right_top = outer_lines[1][1]
+        left_bot = outer_lines[0][0]
+        left_top = outer_lines[0][1]
+        right_bot = outer_lines[1][0]
+        right_top = outer_lines[1][1]
 
-    return (left_top, right_top, left_bot, right_bot)
+        is_court = is_actual_court(height, width, left_bot, left_top, right_bot, right_top)
+
+        if not is_court:
+            return None
+
+        return (left_top, right_top, left_bot, right_bot)
+    except:
+        return None
 
