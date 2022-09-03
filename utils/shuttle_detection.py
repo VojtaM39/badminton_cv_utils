@@ -1,3 +1,5 @@
+import numpy as np
+
 def get_court_rectangle(frame, corners, top_offset, bottom_offset, horizontal_offset):
   """
   Returns croped court from frame
