@@ -1,4 +1,5 @@
 from math import cos, sin, radians
+import random
 import cv2
 import numpy as np
 
@@ -109,9 +110,24 @@ def get_scale_matrix(scale):
                    [0, scale[1], 0],
                    [0, 0, 1]])
 
-def get_random_transformation():
-  rotation_matrix = get_rotation_matrix([10, 0, 0])
-  scale_matrix = get_scale_matrix([1.2, 1])
+def get_random_transformation(seed):
+  X_ROTATION = 15
+  Y_ROTATION = 15
+  Z_ROTATION = 15
+  SCALE = 0.3
+
+  random.seed(seed)
+
+  x_rotation = random.uniform(-X_ROTATION, X_ROTATION)
+  y_rotation = random.uniform(-Y_ROTATION, Y_ROTATION)
+  z_rotation = random.uniform(-Y_ROTATION, Y_ROTATION)
+
+  # the pose is then normalized to -1 and 1, so we do not have to scale both axis
+  scale = random.uniform(1 - SCALE, 1 + SCALE)
+
+  rotation_matrix = get_rotation_matrix([x_rotation, y_rotation, z_rotation])
+  scale_matrix = get_scale_matrix([scale, 1])
+
   return np.dot(rotation_matrix, scale_matrix)
 
 
