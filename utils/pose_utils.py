@@ -45,9 +45,6 @@ def crop_and_center_pose(pose):
 
   x_offset = (max_edge - (max_x - min_x)) / max_edge
   y_offset = (max_edge - (max_y - min_y)) / max_edge
-
-  print(x_offset)
-  print(y_offset)
   
   relative_pose = []
   for point in pose:
@@ -129,5 +126,4 @@ def get_random_transformation(seed):
   scale_matrix = get_scale_matrix([scale, 1])
 
   return np.dot(rotation_matrix, scale_matrix)
-
 
