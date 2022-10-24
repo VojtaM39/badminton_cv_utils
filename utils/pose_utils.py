@@ -107,20 +107,15 @@ def get_scale_matrix(scale):
                    [0, scale[1], 0],
                    [0, 0, 1]])
 
-def get_random_transformation(seed):
-  X_ROTATION = 15
-  Y_ROTATION = 15
-  Z_ROTATION = 15
-  SCALE = 0.3
-
+def get_random_transformation(seed, max_rotation = 0.15, max_scale=0.3):
   random.seed(seed)
 
-  x_rotation = random.uniform(-X_ROTATION, X_ROTATION)
-  y_rotation = random.uniform(-Y_ROTATION, Y_ROTATION)
-  z_rotation = random.uniform(-Y_ROTATION, Y_ROTATION)
+  x_rotation = random.uniform(-max_rotation, max_rotation)
+  y_rotation = random.uniform(-max_rotation, max_rotation)
+  z_rotation = random.uniform(-max_rotation, max_rotation)
 
   # the pose is then normalized to -1 and 1, so we do not have to scale both axis
-  scale = random.uniform(1 - SCALE, 1 + SCALE)
+  scale = random.uniform(1 - max_scale, 1 + max_scale)
 
   rotation_matrix = get_rotation_matrix([x_rotation, y_rotation, z_rotation])
   scale_matrix = get_scale_matrix([scale, 1])
