@@ -2,10 +2,11 @@ import cv2
 import numpy as np
 import math
 
-
 def mask_image(image):
-  lower = np.uint8([200, 200, 200])
-  upper = np.uint8([255, 255, 255])
+  LOWER_THRESHOLD = 220
+  UPPER_THRESHOLD = 255
+  lower = np.uint8([LOWER_THRESHOLD, LOWER_THRESHOLD, LOWER_THRESHOLD])
+  upper = np.uint8([UPPER_THRESHOLD, UPPER_THRESHOLD, UPPER_THRESHOLD])
   return cv2.inRange(image, lower, upper)
 
 def get_lines(image):
@@ -17,6 +18,9 @@ def get_lines(image):
   
   return cv2.HoughLinesP(image, rho, theta, threshold, np.array([]),
                       min_line_length, max_line_gap)
+
+def get_blurred_image(image):
+  return cv2.GaussianBlur(image, (9, 9), 0)
 
 def get_distance(line):
     x1,y1,x2,y2 = line[0]
@@ -52,9 +56,9 @@ def get_vertical_outer_lines(lines, max_size):
     if not is_vertical(line):
       continue
     
-    if get_distance(line) < 0.9 * max_size:
+    if get_distance(line) < 0.4 * max_size:
       continue
-      
+
     x1, y1, x2, y2 = line[0]
     if y1 > y2:
       curr = ((x1, y1), (x2, y2))
@@ -68,9 +72,16 @@ def get_vertical_outer_lines(lines, max_size):
     
   return [min, max]
 
+def get_vertical_lines(lines):
+  result = []
+  for line in lines:
+    if is_vertical(line):
+      result.append(line)
+  return result
+
 def is_actual_court(height, width, left_bot, left_top, right_bot, right_top):
-  MIN_RATIO_TOP = 0.3
-  MIN_RATIO_BOTTOM = 0.5
+  MIN_RATIO_TOP = 0.2
+  MIN_RATIO_BOTTOM = 0.4
   MIN_RATIO_VERTICAL = 0.3
   
   top_width = abs(right_top[0] - left_top[0])
@@ -94,6 +105,15 @@ def is_actual_court(height, width, left_bot, left_top, right_bot, right_top):
 
   return True
 
+def create_line_image(image, lines):
+  height, width, _ = image.shape
+  canvas = np.zeros((height, width, 3), dtype=np.uint8)
+  for line_wrapper in lines:
+    line = line_wrapper[0]
+    cv2.line(canvas, (line[0], line[1]), (line[2], line[3]), (255, 255, 255), 2)
+  return canvas
+
+
 def detect_corners(image):
     """
     Returns:
@@ -101,11 +121,17 @@ def detect_corners(image):
     """
     try:
         height, width, _ = image.shape
+        
         masked_image = mask_image(image)
         lines = get_lines(masked_image)
         filtered_lines = filter_lines(lines, 0.1 * get_max_distance(lines))
-
-        max_distance_horizontal = get_max_distance(lines, False)
+        vertical_lines = get_vertical_lines(filtered_lines)
+        
+        line_image = create_line_image(image, vertical_lines)
+        masked_image = mask_image(line_image)
+        blured_image = get_blurred_image(masked_image)
+        lines = get_lines(blured_image)
+        
         max_distance_vertical = get_max_distance(lines, True)
         outer_lines = get_vertical_outer_lines(lines, max_distance_vertical)
 
@@ -120,6 +146,6 @@ def detect_corners(image):
             return None
 
         return (left_top, right_top, left_bot, right_bot)
-    except:
+    except Exception as e:
         return None
 
