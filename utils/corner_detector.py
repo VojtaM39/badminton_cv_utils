@@ -20,7 +20,7 @@ def get_lines(image):
                       min_line_length, max_line_gap)
 
 def get_blurred_image(image):
-  return cv2.GaussianBlur(image, (9, 9), 0)
+  return cv2.GaussianBlur(image, (13, 13), 0)
 
 def get_distance(line):
     x1,y1,x2,y2 = line[0]
