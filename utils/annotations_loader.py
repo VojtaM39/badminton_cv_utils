@@ -56,5 +56,3 @@ def load_via_annotations(annotation_file, frame_rate):
             })
     return annotations
 
-annotations = load_via_annotations('/home/vojta/bakalarka/via/via-3.0.11/output/jiao_yue_1.csv', 25)
-print(annotations)
