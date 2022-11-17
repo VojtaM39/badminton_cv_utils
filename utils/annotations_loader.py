@@ -55,6 +55,3 @@ def load_via_annotations(annotation_file, frame_rate):
                 'value': value,
             })
     return annotations
-
-annotations = load_annotations('sdfasd', 123)
-print(annotations)
