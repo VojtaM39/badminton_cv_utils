@@ -3,7 +3,7 @@ import numpy as np
 import math
 
 def mask_image(image):
-  LOWER_THRESHOLD = 220
+  LOWER_THRESHOLD = 180
   UPPER_THRESHOLD = 255
   lower = np.uint8([LOWER_THRESHOLD, LOWER_THRESHOLD, LOWER_THRESHOLD])
   upper = np.uint8([UPPER_THRESHOLD, UPPER_THRESHOLD, UPPER_THRESHOLD])
@@ -12,15 +12,15 @@ def mask_image(image):
 def get_lines(image):
   rho = 1  # distance resolution in pixels of the Hough grid
   theta = np.pi / 180  # angular resolution in radians of the Hough grid
-  threshold = 13  # minimum number of votes (intersections in Hough grid cell)
-  min_line_length = 20  # minimum number of pixels making up a line
-  max_line_gap = 10  # maximum gap in pixels between connectable line segments
+  threshold = 4 # minimum number of votes (intersections in Hough grid cell)
+  min_line_length = 26  # minimum number of pixels making up a line
+  max_line_gap = 5  # maximum gap in pixels between connectable line segments
   
   return cv2.HoughLinesP(image, rho, theta, threshold, np.array([]),
                       min_line_length, max_line_gap)
 
 def get_blurred_image(image):
-  return cv2.GaussianBlur(image, (13, 13), 0)
+  return cv2.GaussianBlur(image, (9, 27), 0)
 
 def get_distance(line):
     x1,y1,x2,y2 = line[0]
@@ -113,6 +113,38 @@ def create_line_image(image, lines):
     cv2.line(canvas, (line[0], line[1]), (line[2], line[3]), (255, 255, 255), 2)
   return canvas
 
+def get_corners_from_lines(lines, width, height):
+  x_mid = width // 2
+  
+  BIG_NUMBER = 99999
+  SMALL_NUMBER = -1
+  
+  top_left = (BIG_NUMBER, BIG_NUMBER)
+  top_right = (SMALL_NUMBER, BIG_NUMBER)
+  bottom_left = (BIG_NUMBER, SMALL_NUMBER)
+  bottom_right = (SMALL_NUMBER, SMALL_NUMBER)
+  
+  for line_wrapper in lines:
+    line = line_wrapper[0]
+    
+    point1 = (line[0], line[1])
+    point2 = (line[2], line[3])
+
+    for point in [point1, point2]:
+      if point[0] < x_mid and point[1] < top_left[1]:
+        top_left = point
+        
+      if point[0] > x_mid and point[1] < top_right[1]:
+        top_right = point
+        
+      if point[0] < x_mid and point[1] > bottom_left[1]:
+        bottom_left = point
+        
+      if point[0] > x_mid and point[1] > bottom_right[1]:
+        bottom_right = point
+  
+  return top_left, top_right, bottom_left, bottom_right
+
 
 def detect_corners(image):
     """
@@ -126,26 +158,14 @@ def detect_corners(image):
         lines = get_lines(masked_image)
         filtered_lines = filter_lines(lines, 0.1 * get_max_distance(lines))
         vertical_lines = get_vertical_lines(filtered_lines)
-        
         line_image = create_line_image(image, vertical_lines)
-        masked_image = mask_image(line_image)
-        blured_image = get_blurred_image(masked_image)
-        lines = get_lines(blured_image)
-        
-        max_distance_vertical = get_max_distance(lines, True)
-        outer_lines = get_vertical_outer_lines(lines, max_distance_vertical)
+        top_left, top_right, bottom_left, bottom_right = get_corners_from_lines(vertical_lines, width, height)
 
-        left_bot = outer_lines[0][0]
-        left_top = outer_lines[0][1]
-        right_bot = outer_lines[1][0]
-        right_top = outer_lines[1][1]
-
-        is_court = is_actual_court(height, width, left_bot, left_top, right_bot, right_top)
-
+        is_court = is_actual_court(height, width, bottom_left, top_left, bottom_right, top_right)
         if not is_court:
             return None
-
-        return (left_top, right_top, left_bot, right_bot)
+        
+        return top_left, top_right, bottom_left, bottom_right
     except Exception as e:
         print('detect_corners failed on:')
         print(e)
