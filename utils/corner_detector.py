@@ -147,5 +147,7 @@ def detect_corners(image):
 
         return (left_top, right_top, left_bot, right_bot)
     except Exception as e:
+        print('detect_corners failed on:')
+        print(e)
         return None
 
