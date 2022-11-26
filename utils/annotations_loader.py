@@ -41,6 +41,11 @@ def load_via_annotations(annotation_file, frame_rate):
                 ref1 = int(float(row['temporal_segment_start']) * frame_rate)
                 ref2 = int(float(row['temporal_segment_end']) * frame_rate)
 
+                # I know, this is atrocious :D :(
+                if 'chen_ying_1' in annotation_file:
+                    ref1 -= 30
+                    ref2 -= 30
+
                 metadata = json.loads(row['metadata'])
                 value = metadata['TEMPORAL-SEGMENTS']
             except:
