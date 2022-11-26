@@ -118,6 +118,7 @@ def get_corners_from_lines(lines, width, height):
   
   BIG_NUMBER = 99999
   SMALL_NUMBER = -1
+  CENTER_OFFSET = 20
   
   top_left = (BIG_NUMBER, BIG_NUMBER)
   top_right = (SMALL_NUMBER, BIG_NUMBER)
@@ -131,16 +132,16 @@ def get_corners_from_lines(lines, width, height):
     point2 = (line[2], line[3])
 
     for point in [point1, point2]:
-      if point[0] < x_mid and point[1] < top_left[1]:
+      if point[0] < x_mid - CENTER_OFFSET and point[1] < top_left[1]:
         top_left = point
         
-      if point[0] > x_mid and point[1] < top_right[1]:
+      if point[0] > x_mid + CENTER_OFFSET and point[1] < top_right[1]:
         top_right = point
         
-      if point[0] < x_mid and point[1] > bottom_left[1]:
+      if point[0] < x_mid - CENTER_OFFSET and point[1] > bottom_left[1]:
         bottom_left = point
         
-      if point[0] > x_mid and point[1] > bottom_right[1]:
+      if point[0] > x_mid + CENTER_OFFSET and point[1] > bottom_right[1]:
         bottom_right = point
   
   return top_left, top_right, bottom_left, bottom_right
@@ -161,9 +162,10 @@ def detect_corners(image):
         line_image = create_line_image(image, vertical_lines)
         top_left, top_right, bottom_left, bottom_right = get_corners_from_lines(vertical_lines, width, height)
 
+
         is_court = is_actual_court(height, width, bottom_left, top_left, bottom_right, top_right)
         if not is_court:
-            return None
+          return None
         
         return top_left, top_right, bottom_left, bottom_right
     except Exception as e:
